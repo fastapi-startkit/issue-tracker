@@ -2,7 +2,7 @@ from fastapi import Response
 from fastapi_startkit.validation import Validated
 
 from app.enums import IssueStatus
-from app.http.requests.issue import StoreIssueRequest
+from app.http.requests.issue import StoreIssueRequest, TransitionIssueRequest
 from app.http.resources.issue import IssueResource
 from app.models.issue import Issue
 from app.models.project import Project
@@ -32,5 +32,11 @@ class IssueController:
 
     async def show(self, issue: int) -> IssueResource:
         found = await Issue.find_or_fail(issue)
+        await found.load("reporter", "assignee")
+        return IssueResource.model_validate(found)
+
+    async def transition(self, issue: int, request: Validated[TransitionIssueRequest]) -> IssueResource:
+        found = await Issue.find_or_fail(issue)
+        await found.update({"status": request.status})
         await found.load("reporter", "assignee")
         return IssueResource.model_validate(found)

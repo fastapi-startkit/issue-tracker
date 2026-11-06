@@ -14,6 +14,16 @@ class StoreIssueRequest(FormRequest):
     assignee_id: Annotated[int | None, Field().nullable().exists("users", "id")] = None
 
 
+class IssueFilters(FormRequest):
+    status: list[IssueStatus] = []
+    priority: list[IssuePriority] = []
+    assignee_id: int | None = None
+    unassigned: bool = False
+    q: Annotated[str, Field().max(100)] = ""
+    sort: Annotated[str, Field().in_(["number", "-number", "updated_at", "-updated_at"])] = "-number"
+    page: Annotated[int, Field().min(1)] = 1
+
+
 class UpdateIssueRequest(FormRequest):
     priority: IssuePriority = IssuePriority.MEDIUM
     assignee_id: Annotated[int | None, Field().nullable().exists("users", "id")] = None

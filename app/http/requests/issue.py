@@ -14,6 +14,11 @@ class StoreIssueRequest(FormRequest):
     assignee_id: Annotated[int | None, Field().nullable().exists("users", "id")] = None
 
 
+class UpdateIssueRequest(FormRequest):
+    priority: IssuePriority = IssuePriority.MEDIUM
+    assignee_id: Annotated[int | None, Field().nullable().exists("users", "id")] = None
+
+
 class TransitionIssueRequest(FormRequest):
     status: IssueStatus
 

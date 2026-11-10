@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi_startkit.validation import Field, FormRequest, Validator
+from pydantic import StringConstraints
 
 from app.enums import IssuePriority, IssueStatus
 from app.models.issue import Issue
@@ -11,6 +12,13 @@ class StoreIssueRequest(FormRequest):
     description: str | None = None
     priority: IssuePriority = IssuePriority.MEDIUM
     reporter_id: Annotated[int, Field().required().exists("users", "id")]
+    assignee_id: Annotated[int | None, Field().nullable().exists("users", "id")] = None
+
+
+class UpdateIssueRequest(FormRequest):
+    title: Annotated[str, StringConstraints(min_length=1, max_length=255)] = ""
+    description: str | None = None
+    priority: IssuePriority = IssuePriority.MEDIUM
     assignee_id: Annotated[int | None, Field().nullable().exists("users", "id")] = None
 
 

@@ -5,6 +5,8 @@ class FastapiProvider(FastAPIProvider):
     def boot(self):
         super().boot()
         from routes.api import api, router
+        from routes.web import web
 
         self.app.fastapi.include_router(router.router)
         self.app.fastapi.include_router(api.router)
+        self.app.fastapi.include_router(web.router)

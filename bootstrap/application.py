@@ -11,6 +11,8 @@ from providers.fastapi_provider import FastapiProvider
 from fastapi_startkit.inertia import InertiaProvider
 from fastapi_startkit.vite import ViteProvider
 from config.vite import ViteConfig
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi_startkit.environment import env
 
 app = Application(
     base_path=Path(__file__).resolve().parent.parent,
@@ -23,3 +25,5 @@ app = Application(
         InertiaProvider,
     ],
 )
+
+app.add_middleware(SessionMiddleware, secret_key=env("SESSION_SECRET"))

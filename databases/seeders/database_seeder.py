@@ -1,6 +1,9 @@
 from fastapi_startkit.masoniteorm.seeders import Seeder
 
+from databases.seeders.project_table_seeder import ProjectTableSeeder
+from databases.seeders.user_table_seeder import UserTableSeeder
+
 
 class DatabaseSeeder(Seeder):
     async def run(self):
-        pass
+        await self.call(UserTableSeeder, ProjectTableSeeder)

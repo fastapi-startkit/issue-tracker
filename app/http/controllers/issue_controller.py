@@ -2,7 +2,7 @@ from fastapi import Response
 from fastapi_startkit.validation import Validated
 
 from app.http.requests.issue import StoreIssueRequest, TransitionIssueRequest, UpdateIssueRequest
-from app.http.resources.issue import IssueResource
+from app.http.resources.issue import IssueDetailResource, IssueResource
 from app.models.issue import Issue
 from app.models.project import Project
 
@@ -20,10 +20,9 @@ class IssueController:
         response.status_code = 201
         return IssueResource.model_validate(issue)
 
-    async def show(self, issue: int) -> IssueResource:
-        found = await Issue.find_or_fail(issue)
-        await found.load("reporter", "assignee")
-        return IssueResource.model_validate(found)
+    async def show(self, issue: int) -> IssueDetailResource:
+        found = await Issue.with_("reporter", "assignee", "comments.author").find_or_fail(issue)
+        return IssueDetailResource.model_validate(found)
 
     async def update(self, issue: int, request: Validated[UpdateIssueRequest]) -> IssueResource:
         found = await Issue.find_or_fail(issue)

@@ -28,3 +28,10 @@ class IssueResource(BaseModel):
 
 class IssueDetailResource(IssueResource):
     comments: list[CommentResource]
+
+
+class IssuePage(BaseModel):
+    data: list[IssueResource]
+    total: int
+    current_page: int
+    last_page: int
